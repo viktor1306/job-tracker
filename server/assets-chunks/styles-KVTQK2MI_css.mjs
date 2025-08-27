@@ -1,2 +1,0 @@
-export default `@charset "UTF-8";html,body{margin:0;padding:0;box-sizing:border-box}
-`;

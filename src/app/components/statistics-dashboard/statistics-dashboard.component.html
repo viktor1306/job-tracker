@@ -1,0 +1,24 @@
+<!-- src/app/components/statistics-dashboard/statistics-dashboard.component.html -->
+<div class="stats-container" *ngIf="totalApplications > 0">
+  
+  <div class="stat-card">
+    <h2>{{ totalApplications }}</h2>
+    <p>Всього подано</p>
+  </div>
+
+  <div class="stat-card">
+    <h2>{{ inProgressCount }}</h2>
+    <p>В процесі</p>
+  </div>
+
+  <div class="stat-card">
+    <h2>{{ offersCount }}</h2>
+    <p>Оферів</p>
+  </div>
+
+  <div class="stat-card">
+    <h2>{{ rejectionsCount }}</h2>
+    <p>Відмов</p>
+  </div>
+
+</div>

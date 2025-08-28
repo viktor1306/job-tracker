@@ -4,11 +4,16 @@ import { CommonModule } from '@angular/common';
 import { SupabaseService } from './services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { Vacancy } from './interfaces/vacancy';
+import { StatisticsDashboardComponent } from './components/statistics-dashboard/statistics-dashboard.component';
+
+import { Subscription } from 'rxjs';
+import { LoginComponent } from './pages/login/login.component';
+import { AuthService, UserSession } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, StatisticsDashboardComponent, LoginComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -25,13 +30,30 @@ export class AppComponent implements OnInit {
     status: 'Подано'
   };
 
+  session: UserSession | null = null; // Тут будемо зберігати сесію
+  private authSubscription!: Subscription; // Для відписки
+
   constructor(
     private supabaseService: SupabaseService,
+    private authService: AuthService,
     private zone: NgZone
   ) {}
 
   ngOnInit() {
-    this.fetchVacancies();
+    // Підписуємось на зміни стану автентифікації
+    this.authSubscription = this.authService.session$.subscribe(session => {
+      this.session = session;
+      if (this.session) { // Якщо користувач залогінився
+        this.fetchVacancies();
+      } else { // Якщо користувач вийшов
+        this.vacancies = [];
+      }
+    });
+  }
+
+  // Дуже важливо відписуватись, щоб уникнути витоків пам'яті
+  ngOnDestroy() {
+    this.authSubscription.unsubscribe();
   }
 
   async fetchVacancies() {
@@ -131,6 +153,23 @@ export class AppComponent implements OnInit {
     } catch (error) {
       console.error('Помилка при оновленні статусу:', error);
     }
+  }
+
+    // Новий метод для виклику з HTML
+  signOut() {
+    this.authService.signOut();
+  }
+  
+  // Допоміжна функція для очищення форми
+  resetNewVacancy() {
+    return {
+      vacancy_title: '',
+      vacancy_url: '',
+      platform: 'Work.ua',
+      salary: '',
+      date_applied: new Date().toISOString().split('T')[0],
+      status: 'Подано'
+    };
   }
 
 }

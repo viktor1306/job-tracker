@@ -1,0 +1,43 @@
+/* src/app/pages/login/login.component.scss */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-card {
+  // Стилі гласморфізму, як ми любимо
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 3rem 4rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.google-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #ffffff;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}

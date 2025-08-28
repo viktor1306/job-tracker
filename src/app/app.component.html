@@ -1,67 +1,84 @@
 <!-- src/app/app.component.html -->
-<div class="container">
-  <h1>Мій трекер вакансій</h1>
 
-  <!-- ФОРМА ДОДАВАННЯ НОВОЇ ВАКАНСІЇ -->
-  <form (ngSubmit)="addVacancy()" class="add-form">
-    <h2>Додати нову вакансію</h2>
-    <div class="form-grid">
-      <input type="text" [(ngModel)]="newVacancy.vacancy_title" name="vacancy_title" placeholder="Назва вакансії"
-        required>
-      <input type="url" [(ngModel)]="newVacancy.vacancy_url" name="vacancy_url" placeholder="URL вакансії" required>
-      <select [(ngModel)]="newVacancy.platform" name="platform">
-        <option value="Work.ua">Work.ua</option>
-        <option value="robota.ua">robota.ua</option>
-      </select>
-      <input type="text" [(ngModel)]="newVacancy.salary" name="salary" placeholder="Зарплата">
-      <input type="date" [(ngModel)]="newVacancy.date_applied" name="date_applied">
-      <select [(ngModel)]="newVacancy.status" name="status">
-        <option value="Подано">Подано</option>
-        <option value="Співбесіда">Співбесіда</option>
-        <option value="Тестове">Тестове</option>
-        <option value="Офер">Офер</option>
-        <option value="Відмова">Відмова</option>
-      </select>
+<div *ngIf="session; else loginTemplate">
+
+  <div class="container">
+
+    <div class="header">
+      <h1>Мій трекер вакансій</h1>
+      <button (click)="signOut()" class="logout-btn">Вийти</button>
     </div>
-    <button type="submit">Додати вакансію</button>
-  </form>
-  <!-- КІНЕЦЬ ФОРМИ -->
 
-  <hr> <!-- Розділювач -->
+    <app-statistics-dashboard [vacancies]="vacancies"></app-statistics-dashboard>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Назва вакансії</th>
-        <th>Платформа</th>
-        <th>Дата відгуку</th>
-        <th>ЗП</th>
-        <th>Статус</th>
-        <th>Дії</th>
-      </tr>
-    </thead>
-<tbody>
-  <tr *ngFor="let vacancy of vacancies">
-    <td data-label="Назва вакансії"><a [href]="vacancy.vacancy_url" target="_blank">{{ vacancy.vacancy_title }}</a></td>
-    <td data-label="Платформа">{{ vacancy.platform }}</td>
-    <td data-label="Дата відгуку">{{ vacancy.date_applied }}</td>
-    <td data-label="ЗП">{{ vacancy.salary }}</td>
-    <td data-label="Статус">
-      <select [ngModel]="vacancy.status" (ngModelChange)="updateStatus(vacancy.id, $event)" name="status-{{vacancy.id}}">
-        <option value="Подано">Подано</option>
-        <option value="Співбесіда">Співбесіда</option>
-        <option value="Тестове">Тестове</option>
-        <option value="Офер">Офер</option>
-        <option value="Відмова">Відмова</option>
-      </select>
-    </td>
-    <td data-label="Дії">
-      <button (click)="deleteVacancy(vacancy.id)" class="delete-btn">Видалити</button>
-    </td>
-  </tr>
-</tbody>
-  </table>
-  <div *ngIf="vacancies.length === 0">
-    <p>Ви ще не додали жодної вакансії.</p>
+    <form (ngSubmit)="addVacancy()" class="add-form">
+      <h2>Додати нову вакансію</h2>
+      <div class="form-grid">
+        <input type="text" [(ngModel)]="newVacancy.vacancy_title" name="vacancy_title" placeholder="Назва вакансії"
+          required>
+        <input type="url" [(ngModel)]="newVacancy.vacancy_url" name="vacancy_url" placeholder="URL вакансії" required>
+        <select [(ngModel)]="newVacancy.platform" name="platform">
+          <option value="Work.ua">Work.ua</option>
+          <option value="robota.ua">robota.ua</option>
+        </select>
+        <input type="text" [(ngModel)]="newVacancy.salary" name="salary" placeholder="Зарплата">
+        <input type="date" [(ngModel)]="newVacancy.date_applied" name="date_applied">
+        <select [(ngModel)]="newVacancy.status" name="status">
+          <option value="Подано">Подано</option>
+          <option value="Співбесіда">Співбесіда</option>
+          <option value="Тестове">Тестове</option>
+          <option value="Офер">Офер</option>
+          <option value="Відмова">Відмова</option>
+        </select>
+      </div>
+      <button type="submit">Додати вакансію</button>
+    </form>
+
+    <hr>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Назва вакансії</th>
+          <th>Платформа</th>
+          <th>Дата відгуку</th>
+          <th>ЗП</th>
+          <th>Статус</th>
+          <th>Дії</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let vacancy of vacancies">
+          <td data-label="Назва вакансії"><a [href]="vacancy.vacancy_url" target="_blank">{{ vacancy.vacancy_title
+              }}</a>
+          </td>
+          <td data-label="Платформа">{{ vacancy.platform }}</td>
+          <td data-label="Дата відгуку">{{ vacancy.date_applied }}</td>
+          <td data-label="ЗП">{{ vacancy.salary }}</td>
+          <td data-label="Статус">
+            <select [ngModel]="vacancy.status" (ngModelChange)="updateStatus(vacancy.id, $event)"
+              name="status-{{vacancy.id}}">
+              <option value="Подано">Подано</option>
+              <option value="Співбесіда">Співбесіда</option>
+              <option value="Тестове">Тестове</option>
+              <option value="Офер">Офер</option>
+              <option value="Відмова">Відмова</option>
+            </select>
+          </td>
+          <td data-label="Дії">
+            <button (click)="deleteVacancy(vacancy.id)" class="delete-btn">Видалити</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="vacancies.length === 0">
+      <p>Ви ще не додали жодної вакансії.</p>
+    </div>
   </div>
+
 </div>
+
+<!-- Інакше (сесії немає), показуємо шаблон для входу -->
+<ng-template #loginTemplate>
+  <app-login></app-login>
+</ng-template>

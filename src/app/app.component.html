@@ -32,48 +32,82 @@
         </select>
       </div>
       <button type="submit">Додати вакансію</button>
+      <!-- src/app/app.component.html -->
+
     </form>
 
-    <hr>
+    <!-- Якщо НЕ йде завантаження, показуємо контент -->
+    <div *ngIf="!isLoading; else loadingSpinner">
 
-    <table>
-      <thead>
-        <tr>
-          <th>Назва вакансії</th>
-          <th>Платформа</th>
-          <th>Дата відгуку</th>
-          <th>ЗП</th>
-          <th>Статус</th>
-          <th>Дії</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let vacancy of vacancies">
-          <td data-label="Назва вакансії"><a [href]="vacancy.vacancy_url" target="_blank">{{ vacancy.vacancy_title
-              }}</a>
-          </td>
-          <td data-label="Платформа">{{ vacancy.platform }}</td>
-          <td data-label="Дата відгуку">{{ vacancy.date_applied }}</td>
-          <td data-label="ЗП">{{ vacancy.salary }}</td>
-          <td data-label="Статус">
-            <select [ngModel]="vacancy.status" (ngModelChange)="updateStatus(vacancy.id, $event)"
-              name="status-{{vacancy.id}}">
-              <option value="Подано">Подано</option>
-              <option value="Співбесіда">Співбесіда</option>
-              <option value="Тестове">Тестове</option>
-              <option value="Офер">Офер</option>
-              <option value="Відмова">Відмова</option>
-            </select>
-          </td>
-          <td data-label="Дії">
-            <button (click)="deleteVacancy(vacancy.id)" class="delete-btn">Видалити</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div *ngIf="vacancies.length === 0">
-      <p>Ви ще не додали жодної вакансії.</p>
+      <div class="table-controls">
+        <div class="search-container">
+          <input type="text" [(ngModel)]="searchTerm" (input)="applyFiltersAndSorting()"
+            placeholder="Пошук за назвою вакансії...">
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th (click)="onSort('vacancy_title')" class="sortable">
+              Назва вакансії
+              <span *ngIf="sortColumn === 'vacancy_title'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th (click)="onSort('platform')" class="sortable">
+              Платформа
+              <span *ngIf="sortColumn === 'platform'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th (click)="onSort('date_applied')" class="sortable">
+              Дата відгуку
+              <span *ngIf="sortColumn === 'date_applied'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th>ЗП</th>
+            <th (click)="onSort('status')" class="sortable">
+              Статус
+              <span *ngIf="sortColumn === 'status'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th>Дії</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vacancy of filteredVacancies">
+            <td data-label="Назва вакансії"><a [href]="vacancy.vacancy_url" target="_blank">{{ vacancy.vacancy_title
+                }}</a>
+            </td>
+            <td data-label="Платформа">{{ vacancy.platform }}</td>
+            <td data-label="Дата відгуку">{{ vacancy.date_applied }}</td>
+            <td data-label="ЗП">{{ vacancy.salary }}</td>
+            <td data-label="Статус">
+              <select [ngModel]="vacancy.status" (ngModelChange)="updateStatus(vacancy.id, $event)"
+                name="status-{{vacancy.id}}">
+                <option value="Подано">Подано</option>
+                <option value="Співбесіда">Співбесіда</option>
+                <option value="Тестове">Тестове</option>
+                <option value="Офер">Офер</option>
+                <option value="Відмова">Відмова</option>
+              </select>
+            </td>
+            <td data-label="Дії">
+              <button (click)="deleteVacancy(vacancy.id)" class="delete-btn">Видалити</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Показуємо цей блок, тільки якщо завантаження завершено І список порожній -->
+      <div *ngIf="filteredVacancies.length === 0" class="empty-state">
+        <p>Ви ще не додали жодної вакансії. Час це виправити!</p>
+      </div>
+
     </div>
+
+    <!-- Інакше, показуємо шаблон зі спіннером -->
+    <ng-template #loadingSpinner>
+      <div class="spinner-container">
+        <div class="spinner"></div>
+      </div>
+    </ng-template>
+
   </div>
 
 </div>

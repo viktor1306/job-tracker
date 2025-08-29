@@ -22,6 +22,16 @@ import { ConfirmDialogService } from './services/confirm-dialog.service';
 })
 export class AppComponent implements OnInit {
 
+  isLoading: boolean = true;
+  searchTerm: string = '';
+
+  // Властивості для сортування
+  sortColumn: string = 'date_applied'; // За замовчуванням сортуємо за датою
+  sortDirection: 'asc' | 'desc' = 'desc'; // За замовчуванням - від нових до старих
+
+  // Масив, який бачить користувач (результат фільтрації та сортування)
+  filteredVacancies: Vacancy[] = [];
+
   vacancies: Vacancy[] = [];
 
   newVacancy: any = {
@@ -44,6 +54,33 @@ export class AppComponent implements OnInit {
     private confirmDialogService: ConfirmDialogService
   ) { }
 
+  applyFiltersAndSorting() {
+    // Крок 1: Фільтрація
+    let result = this.vacancies.filter(v =>
+      v.vacancy_title.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+
+    // Крок 2: Сортування
+    result.sort((a, b) => {
+      // @ts-ignore
+      const valA = a[this.sortColumn];
+      // @ts-ignore
+      const valB = b[this.sortColumn];
+
+      let comparison = 0;
+      if (valA > valB) {
+        comparison = 1;
+      } else if (valA < valB) {
+        comparison = -1;
+      }
+
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+    // Крок 3: Оновлюємо масив, який бачить користувач
+    this.filteredVacancies = result;
+  }
+
   ngOnInit() {
     // Підписуємось на зміни стану автентифікації
     this.authSubscription = this.authService.session$.subscribe(session => {
@@ -56,27 +93,29 @@ export class AppComponent implements OnInit {
     });
   }
 
-  // Дуже важливо відписуватись, щоб уникнути витоків пам'яті
   ngOnDestroy() {
     this.authSubscription.unsubscribe();
   }
 
   async fetchVacancies() {
+    this.isLoading = true;
     try {
       const { data, error } = await this.supabaseService.getVacancies();
       if (error) {
-        console.error('Помилка:', error.message);
+        this.notificationService.showError(error.message, 'Помилка бази даних');
         return;
       }
-
       this.zone.run(() => {
         this.vacancies = data || [];
+        this.applyFiltersAndSorting();
       });
-
-    } catch (error) {
-      console.error('Невідома помилка:', error);
+    } catch (error: any) {
+      this.notificationService.showError(error.message, 'Невідома помилка');
+    } finally {
+      this.zone.run(() => {
+        this.isLoading = false;
+      });
     }
-
   }
 
   async addVacancy() {
@@ -95,10 +134,11 @@ export class AppComponent implements OnInit {
         return;
       }
 
-      // Миттєво оновлюємо локальний список і показуємо сповіщення
+
       this.zone.run(() => {
-        this.vacancies.push(data[0]); // Додаємо новий елемент в масив
-        this.newVacancy = this.resetNewVacancy(); // Очищуємо форму
+        this.vacancies.push(data[0]);
+        this.applyFiltersAndSorting();
+        this.newVacancy = this.resetNewVacancy();
         this.notificationService.showSuccess('Вакансію успішно додано!');
       });
 
@@ -109,7 +149,7 @@ export class AppComponent implements OnInit {
 
   async deleteVacancy(vacancyId: number) {
     const confirmed = await this.confirmDialogService.open('Ви впевнені, що хочете видалити цю вакансію?');
-    
+
     if (!confirmed) {
       return; // Якщо користувач натиснув "Скасувати", виходимо
     }
@@ -122,7 +162,8 @@ export class AppComponent implements OnInit {
 
       // Миттєво оновлюємо локальний список і показуємо сповіщення
       this.zone.run(() => {
-        this.vacancies = this.vacancies.filter(v => v.id !== vacancyId); // Видаляємо елемент
+        this.vacancies = this.vacancies.filter(v => v.id !== vacancyId);
+        this.applyFiltersAndSorting();
         this.notificationService.showInfo('Вакансію успішно видалено!');
       });
 
@@ -130,7 +171,6 @@ export class AppComponent implements OnInit {
       this.notificationService.showError(error.message, 'Невідома помилка');
     }
   }
-
 
   async updateStatus(vacancyId: number, newStatus: string) {
     try {
@@ -152,12 +192,11 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // Новий метод для виклику з HTML
+
   signOut() {
     this.authService.signOut();
   }
 
-  // Допоміжна функція для очищення форми
   resetNewVacancy() {
     return {
       vacancy_title: '',
@@ -167,6 +206,18 @@ export class AppComponent implements OnInit {
       date_applied: new Date().toISOString().split('T')[0],
       status: 'Подано'
     };
+  }
+
+  onSort(column: string) {
+    if (this.sortColumn === column) {
+      // Якщо клікнули по тій самій колонці - змінюємо напрямок
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Якщо клікнули по новій - встановлюємо її і напрямок за замовчуванням
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.applyFiltersAndSorting();
   }
 
 }

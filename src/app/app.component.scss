@@ -4,234 +4,343 @@
 // Це найважливіша частина для гласморфізму.
 // Ми створюємо яскравий фон для всієї сторінки.
 
-
-
 :host {
-  display: block; // Дозволяє :host зайняти весь екран
-  min-height: 100vh; // Мінімальна висота = висота екрану
-  padding: 2rem 0;
-  background-color: #1a1a2e;
-  background-image: linear-gradient(45deg, #16213e, #0f3460, #533483, #e94560);
-  background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #e0e0e0; // Світлий колір тексту для темного фону
+    display: block; // Дозволяє :host зайняти весь екран
+    min-height: 100vh; // Мінімальна висота = висота екрану
+    padding: 2rem 0;
+    background-color: #1a1a2e;
+    background-image: linear-gradient(45deg, #16213e, #0f3460, #533483, #e94560);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #e0e0e0; // Світлий колір тексту для темного фону
 }
 
 // Анімація для градієнтного фону
 @keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
-h1, h2 {
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+h1,
+h2 {
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 hr {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  margin: 2rem 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 2rem 0;
 }
 
 .form-grid {
-  display: grid;
-  // На великих екранах - 3 колонки. Можеш змінити 3 на 2, якщо хочеш.
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 1rem;
-  margin-bottom: 1rem;
+    display: grid;
+    // На великих екранах - 3 колонки. Можеш змінити 3 на 2, якщо хочеш.
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
 
-  // Адаптивність: якщо ширина екрану 768px або менше...
-  @media (max-width: 768px) {
-    // ...робимо одну колонку.
-    grid-template-columns: 1fr;
-  }
+    // Адаптивність: якщо ширина екрану 768px або менше...
+    @media (max-width: 768px) {
+        // ...робимо одну колонку.
+        grid-template-columns: 1fr;
+    }
 }
 
 // --- 2. Стилі для "скляних" панелей (форма і таблиця) ---
-.add-form, table {
-  // Ось магія гласморфізму:
-  background: rgba(255, 255, 255, 0.1); // Напівпрозорий білий фон
-  backdrop-filter: blur(10px); // Ефект розмиття (матове скло)
-  border: 1px solid rgba(255, 255, 255, 0.2); // Тонка біла рамка
-  border-radius: 16px; // Більш заокруглені кути
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); // М'яка тінь
-  padding: 1.5rem;
+.add-form,
+table {
+    // Ось магія гласморфізму:
+    background: rgba(255, 255, 255, 0.1); // Напівпрозорий білий фон
+    backdrop-filter: blur(10px); // Ефект розмиття (матове скло)
+    border: 1px solid rgba(255, 255, 255, 0.2); // Тонка біла рамка
+    border-radius: 16px; // Більш заокруглені кути
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); // М'яка тінь
+    padding: 1.5rem;
 }
 
 // --- 3. Стилі для полів вводу (робимо їх теж "скляними") ---
-input, select {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  padding: 0.75rem;
-  color: #ffffff;
-  font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box;
+input,
+select {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: #ffffff;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 
-  &::placeholder { // Стиль для тексту-підказки
-    color: rgba(224, 224, 224, 0.7);
-  }
+    &::placeholder {
+        // Стиль для тексту-підказки
+        color: rgba(224, 224, 224, 0.7);
+    }
 
-  &:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.7);
-  }
+    &:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.7);
+    }
 }
 
 // Окремі стилі для select, щоб стрілочка була видимою
 select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: right 0.7em top 50%, 0 0;
-  background-size: .65em auto, 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position:
+        right 0.7em top 50%,
+        0 0;
+    background-size:
+        0.65em auto,
+        100%;
 }
 
 select option {
-  background: #16213e; // Темний фон для опцій
+    background: #16213e; // Темний фон для опцій
 }
 
 // --- 4. Стилі для кнопок ---
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.25s;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
 }
 
 .add-form button {
-  background-color: rgba(40, 167, 69, 0.5); // Напівпрозорий зелений
-  color: #ffffff;
-  &:hover {
-    background-color: rgba(40, 167, 69, 0.8);
-    border-color: rgba(255,255,255,0.5);
-  }
+    background-color: rgba(40, 167, 69, 0.5); // Напівпрозорий зелений
+    color: #ffffff;
+    &:hover {
+        background-color: rgba(40, 167, 69, 0.8);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
 }
 
 .delete-btn {
-  background-color: rgba(220, 53, 69, 0.5); // Напівпрозорий червоний
-  color: #ffffff;
-  padding: 5px 10px;
-  &:hover {
-    background-color: rgba(220, 53, 69, 0.8);
-    border-color: rgba(255,255,255,0.5);
-  }
+    background-color: rgba(220, 53, 69, 0.5); // Напівпрозорий червоний
+    color: #ffffff;
+    padding: 5px 10px;
+    &:hover {
+        background-color: rgba(220, 53, 69, 0.8);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
 }
-
 
 // --- 5. Стилізація таблиці ---
 table {
-  width: 100%;
-  border-collapse: separate; // Важливо для border-radius
-  border-spacing: 0;
+    width: 100%;
+    border-collapse: separate; // Важливо для border-radius
+    border-spacing: 0;
 }
 
-th, td {
-  padding: 0.9rem;
-  text-align: left;
-  // Рамки тепер будуть напівпрозорими
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+th,
+td {
+    padding: 0.9rem;
+    text-align: left;
+    // Рамки тепер будуть напівпрозорими
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 thead {
-  background-color: rgba(255, 255, 255, 0.15); // Заголовок трохи світліший
+    background-color: rgba(255, 255, 255, 0.15); // Заголовок трохи світліший
 }
 
 // Прибираємо нижню рамку у останнього рядка ТІЛЬКИ на великих екранах
 @media screen and (min-width: 769px) {
-  tbody tr:last-child td {
-    border-bottom: none;
-  }
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
 }
 
 tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.2); // Підсвітка при наведенні
+    background-color: rgba(255, 255, 255, 0.2); // Підсвітка при наведенні
 }
 
 td a {
-  color: #92b4f4;
-  text-decoration: none;
-  font-weight: 500;
-  &:hover {
-    text-decoration: underline;
-  }
+    color: #92b4f4;
+    text-decoration: none;
+    font-weight: 500;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 /* Додай цей код в кінець файлу */
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 .logout-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #e0e0e0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* src/app/app.component.scss */
+
+/* Стилі для панелі керування, пошуку та сортування */
+
+.table-controls {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+}
+
+.search-container {
+    width: 40%;
+    max-width: 350px;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* Стилі для сортування */
+th.sortable {
+    cursor: pointer;
+    user-select: none; // Щоб текст не виділявся при кліках
+    transition: background-color 0.2s; // Плавний перехід
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    span {
+        // Стилізуємо наші стрілочки
+        margin-left: 0.5rem;
+        color: #92b4f4; // Робимо їх того ж кольору, що й посилання
+    }
+}
+
+thead th:first-child {
+    border-top-left-radius: 16px;
+}
+
+// Заокруглюємо правий верхній кут у останнього заголовка
+thead th:last-child {
+    border-top-right-radius: 16px;
+}
+
+/* Стилі для індикатора завантаження */
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    margin-top: 2rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Стилі для порожнього стану */
+.empty-state {
+    text-align: center;
+    padding: 4rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    margin-top: 2rem;
+    color: rgba(224, 224, 224, 0.8);
+}
+
+@media screen and (min-width: 769px) {
+    tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 16px;
+    }
+
+    tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 16px;
+    }
 }
 
 /* --- Адаптивність для таблиці --- */
 @media screen and (max-width: 768px) {
-  
-  table thead {
-    display: none;
-  }
-  
-  table tr {
-    display: block;
-    margin-bottom: 1rem;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 0 1rem; // <-- ЗМІНА: прибираємо вертикальний padding з картки
-  }
-  
-  table td {
-    display: block;
-    text-align: right; 
-    position: relative;
-    padding-left: 50%;
-    
-    // --- ОСЬ НАШІ ЗМІНИ ---
-    padding-top: 1rem;    // <-- ЗМІНА: Додаємо верхній відступ
-    padding-bottom: 1rem; // <-- ЗМІНА: Додаємо нижній відступ
-    // Додаємо напівпрозору лінію-розділювач
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); // <-- ЗМІНА
-  }
-  
-  table td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 1rem; 
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.7);
-    text-align: left;
-    // Вирівнюємо заголовок по центру з текстом
-    top: 50%; // <-- ЗМІНА
-    transform: translateY(-50%); // <-- ЗМІНА
-  }
+    table thead {
+        display: none;
+    }
 
-  // Прибираємо лінію у останньої комірки в картці
-  table td:last-child {
-    border-bottom: none;
-  }
+    table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0 1rem; // <-- ЗМІНА: прибираємо вертикальний padding з картки
+    }
+
+    table td {
+        display: block;
+        text-align: right;
+        position: relative;
+        padding-left: 50%;
+
+        // --- ОСЬ НАШІ ЗМІНИ ---
+        padding-top: 1rem; // <-- ЗМІНА: Додаємо верхній відступ
+        padding-bottom: 1rem; // <-- ЗМІНА: Додаємо нижній відступ
+        // Додаємо напівпрозору лінію-розділювач
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); // <-- ЗМІНА
+    }
+
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 0.7);
+        text-align: left;
+        // Вирівнюємо заголовок по центру з текстом
+        top: 50%; // <-- ЗМІНА
+        transform: translateY(-50%); // <-- ЗМІНА
+    }
+
+    // Прибираємо лінію у останньої комірки в картці
+    table td:last-child {
+        border-bottom: none;
+    }
 }

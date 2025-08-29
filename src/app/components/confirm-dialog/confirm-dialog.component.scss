@@ -1,0 +1,56 @@
+/* src/app/components/confirm-dialog/confirm-dialog.component.scss */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-box {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-confirm {
+  background-color: rgba(0, 123, 255, 0.5); // Синій
+  color: white;
+  &:hover { background-color: rgba(0, 123, 255, 0.8); }
+}
+
+.btn-cancel {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255,255,255,0.3);
+  color: white;
+  &:hover { background-color: rgba(255, 255, 255, 0.2); }
+}

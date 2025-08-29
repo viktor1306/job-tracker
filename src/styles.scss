@@ -3,3 +3,43 @@ html, body {
   padding: 0;
   box-sizing: border-box; /* Хороша практика для управління розмірами елементів */
 }
+
+.toast-container .ngx-toastr {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
+  border-radius: 12px !important; /* Закруглюємо краї */
+  padding: 15px 20px !important;
+}
+
+/* Колір тексту */
+.toast-message {
+  color: #ffffff !important;
+}
+
+/* Колір іконки та кнопки закриття */
+.toast-close-button, .toast-success .toast-title, .toast-info .toast-title {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+.toast-close-button:hover {
+  opacity: 0.8;
+}
+
+/* Кольори для різних типів сповіщень */
+.toast-success {
+  background-image: none !important; // Ховаємо стандартну іконку
+  border-left: 5px solid rgba(40, 167, 69, 0.8) !important;
+}
+
+.toast-error {
+  background-image: none !important;
+  border-left: 5px solid rgba(220, 53, 69, 0.8) !important;
+}
+
+/* НОВИЙ СТИЛЬ ДЛЯ ВИДАЛЕННЯ (INFO) */
+.toast-info {
+  background-image: none !important;
+  border-left: 5px solid rgba(0, 123, 255, 0.8) !important; // Синій
+}

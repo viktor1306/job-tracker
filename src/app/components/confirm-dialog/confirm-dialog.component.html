@@ -1,0 +1,10 @@
+<!-- src/app/components/confirm-dialog/confirm-dialog.component.html -->
+<div class="overlay" *ngIf="isVisible$ | async" (click)="onCancel()">
+  <div class="dialog-box" (click)="$event.stopPropagation()">
+    <p>{{ message$ | async }}</p>
+    <div class="buttons">
+      <button class="btn-cancel" (click)="onCancel()">Скасувати</button>
+      <button class="btn-confirm" (click)="onConfirm()">ОК</button>
+    </div>
+  </div>
+</div>

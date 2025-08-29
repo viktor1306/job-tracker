@@ -9,19 +9,22 @@ import { StatisticsDashboardComponent } from './components/statistics-dashboard/
 import { Subscription } from 'rxjs';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthService, UserSession } from './services/auth.service';
+import { NotificationService } from './services/notification.service';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogService } from './services/confirm-dialog.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatisticsDashboardComponent, LoginComponent],
+  imports: [CommonModule, FormsModule, StatisticsDashboardComponent, LoginComponent, ConfirmDialogComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  
+
   vacancies: Vacancy[] = [];
 
-    newVacancy: any = {
+  newVacancy: any = {
     vacancy_title: '',
     vacancy_url: '',
     platform: 'Work.ua',
@@ -36,8 +39,10 @@ export class AppComponent implements OnInit {
   constructor(
     private supabaseService: SupabaseService,
     private authService: AuthService,
-    private zone: NgZone
-  ) {}
+    private zone: NgZone,
+    private notificationService: NotificationService,
+    private confirmDialogService: ConfirmDialogService
+  ) { }
 
   ngOnInit() {
     // Підписуємось на зміни стану автентифікації
@@ -63,7 +68,7 @@ export class AppComponent implements OnInit {
         console.error('Помилка:', error.message);
         return;
       }
-      
+
       this.zone.run(() => {
         this.vacancies = data || [];
       });
@@ -75,72 +80,66 @@ export class AppComponent implements OnInit {
   }
 
   async addVacancy() {
-  try {
-    // 1. Отримуємо ID поточного користувача
-    const userId = this.authService.getCurrentUserId();
-    if (!userId) {
-      alert('Помилка: не вдалося ідентифікувати користувача.');
-      return;
-    }
-
-    // 2. Створюємо об'єкт для відправки, додаючи до нього user_id
-    const vacancyData = {
-      ...this.newVacancy, // Копіюємо всі дані з форми
-      user_id: userId      // І додаємо ID користувача
-    };
-    
-    // 3. Відправляємо повний об'єкт в сервіс
-    const { error } = await this.supabaseService.addVacancy(vacancyData);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    // ... (решта коду залишається без змін)
-  } catch (error) {
-    console.error('Помилка при додаванні вакансії:', error);
-  }
-}
-
-  async deleteVacancy(vacancyId: number) {
-    // Хороша практика: питаємо користувача, чи він впевнений.
-    if (!confirm('Ви впевнені, що хочете видалити цю вакансію?')) {
-      return; // Якщо користувач натиснув "Скасувати", нічого не робимо
-    }
-
     try {
-      const { error } = await this.supabaseService.deleteVacancy(vacancyId);
-      
+      const userId = this.session?.user?.id;
+      if (!userId) {
+        this.notificationService.showError('Сесія користувача не знайдена.', 'Помилка');
+        return;
+      }
+      const vacancyData = { ...this.newVacancy, user_id: userId };
+
+      const { data, error } = await this.supabaseService.addVacancy(vacancyData);
+
       if (error) {
-        alert(error.message);
+        this.notificationService.showError(error.message, 'Помилка бази даних');
         return;
       }
 
-      console.log('Вакансія успішно видалена!');
-      
-      // Просто оновлюємо список, щоб видалений рядок зник
-      this.fetchVacancies();
-      
-      // Або, як варіант для оптимізації (не обов'язково зараз):
-      // Видаляємо елемент з локального масиву без повторного запиту до бази
-      // this.zone.run(() => {
-      //   this.vacancies = this.vacancies.filter(v => v.id !== vacancyId);
-      // });
+      // Миттєво оновлюємо локальний список і показуємо сповіщення
+      this.zone.run(() => {
+        this.vacancies.push(data[0]); // Додаємо новий елемент в масив
+        this.newVacancy = this.resetNewVacancy(); // Очищуємо форму
+        this.notificationService.showSuccess('Вакансію успішно додано!');
+      });
 
-    } catch (error) {
-      console.error('Помилка при видаленні вакансії:', error);
+    } catch (error: any) {
+      this.notificationService.showError(error.message, 'Невідома помилка');
     }
   }
+
+  async deleteVacancy(vacancyId: number) {
+    const confirmed = await this.confirmDialogService.open('Ви впевнені, що хочете видалити цю вакансію?');
+    
+    if (!confirmed) {
+      return; // Якщо користувач натиснув "Скасувати", виходимо
+    }
+    try {
+      const { error } = await this.supabaseService.deleteVacancy(vacancyId);
+      if (error) {
+        this.notificationService.showError(error.message, 'Помилка бази даних');
+        return;
+      }
+
+      // Миттєво оновлюємо локальний список і показуємо сповіщення
+      this.zone.run(() => {
+        this.vacancies = this.vacancies.filter(v => v.id !== vacancyId); // Видаляємо елемент
+        this.notificationService.showInfo('Вакансію успішно видалено!');
+      });
+
+    } catch (error: any) {
+      this.notificationService.showError(error.message, 'Невідома помилка');
+    }
+  }
+
 
   async updateStatus(vacancyId: number, newStatus: string) {
     try {
       const { error } = await this.supabaseService.updateVacancyStatus(vacancyId, newStatus);
-      
+
       if (error) {
         alert(error.message);
         // Якщо сталася помилка, варто перезавантажити дані, щоб скасувати зміни на фронтенді
-        this.fetchVacancies(); 
+        this.fetchVacancies();
         return;
       }
 
@@ -153,11 +152,11 @@ export class AppComponent implements OnInit {
     }
   }
 
-    // Новий метод для виклику з HTML
+  // Новий метод для виклику з HTML
   signOut() {
     this.authService.signOut();
   }
-  
+
   // Допоміжна функція для очищення форми
   resetNewVacancy() {
     return {

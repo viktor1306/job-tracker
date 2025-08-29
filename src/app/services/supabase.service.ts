@@ -42,7 +42,7 @@ export class SupabaseService {
     
     // .from('vacancies') - назва нашої таблиці
     // .insert([vacancyData]) - вставляємо новий об'єкт
-    return this.supabase.from('vacancies').insert([vacancyData]);
+    return this.supabase.from('vacancies').insert([vacancyData]).select();
   }
 
   async deleteVacancy(vacancyId: number) {

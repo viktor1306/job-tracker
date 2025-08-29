@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Redirecting...</title>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        // Встав сюди свої ключі Supabase (ті самі, що і в сервісі)
+        const supabaseUrl = 'https://oaqjxzquekglaltntdra.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hcWp4enF1ZWtnbGFsdG50ZHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMjQwMjAsImV4cCI6MjA3MTkwMDAyMH0.ryUeEJLA5nNBK_DEvj1TQPhPbgaZEM1crFQXXFourmk';
+
+        const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') {
+                // Перенаправляємо на головну сторінку, коли сесія отримана
+                window.location.href = '/job-tracker/';
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <p>Please wait while we redirect you...</p>
+</body>
+
+</html>

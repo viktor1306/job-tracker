@@ -75,35 +75,33 @@ export class AppComponent implements OnInit {
   }
 
   async addVacancy() {
-    try {
-      // 1. Відправляємо дані з форми в сервіс
-      const { error } = await this.supabaseService.addVacancy(this.newVacancy);
-
-      if (error) {
-        // Якщо Supabase повернув помилку, показуємо її
-        alert(error.message);
-        return;
-      }
-
-      console.log('Вакансія успішно додана!');
-      
-      // 2. Оновлюємо список вакансій на сторінці, щоб побачити нову
-      this.fetchVacancies();
-      
-      // 3. Очищуємо форму для наступного додавання
-      this.newVacancy = {
-        vacancy_title: '',
-        vacancy_url: '',
-        platform: 'Work.ua',
-        salary: '',
-        date_applied: new Date().toISOString().split('T')[0],
-        status: 'Подано'
-      };
-
-    } catch (error) {
-      console.error('Помилка при додаванні вакансії:', error);
+  try {
+    // 1. Отримуємо ID поточного користувача
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      alert('Помилка: не вдалося ідентифікувати користувача.');
+      return;
     }
+
+    // 2. Створюємо об'єкт для відправки, додаючи до нього user_id
+    const vacancyData = {
+      ...this.newVacancy, // Копіюємо всі дані з форми
+      user_id: userId      // І додаємо ID користувача
+    };
+    
+    // 3. Відправляємо повний об'єкт в сервіс
+    const { error } = await this.supabaseService.addVacancy(vacancyData);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    // ... (решта коду залишається без змін)
+  } catch (error) {
+    console.error('Помилка при додаванні вакансії:', error);
   }
+}
 
   async deleteVacancy(vacancyId: number) {
     // Хороша практика: питаємо користувача, чи він впевнений.

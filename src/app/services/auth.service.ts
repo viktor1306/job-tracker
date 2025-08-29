@@ -68,4 +68,9 @@ export class AuthService {
   getCurrentUser() {
     return this._session.getValue()?.user;
   }
+
+  getCurrentUserId(): string | undefined {
+    return this._session.getValue()?.user?.id;
+  }
+
 }

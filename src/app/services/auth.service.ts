@@ -47,14 +47,18 @@ export class AuthService {
   }
 
   // Метод для входу через Google
-  async signInWithGoogle() {
-    const { error } = await this.supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
-    if (error) {
-      console.error('Error signing in with Google:', error.message);
+async signInWithGoogle() {
+  const { error } = await this.supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      // ЯВНО вказуємо, куди повернути користувача ПІСЛЯ входу в Google
+      redirectTo: 'https://viktor1306.github.io/job-tracker/callback.html'
     }
+  });
+  if (error) {
+    console.error('Error signing in with Google:', error.message);
   }
+}
 
   // Метод для виходу
   async signOut() {

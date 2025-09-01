@@ -1,0 +1,18 @@
+/* src/styles/_variables.scss */
+
+// --- Кольори ---
+$primary-text-color: #e0e0e0;
+$secondary-text-color: rgba(224, 224, 224, 0.8);
+$accent-color: #92b4f4; // Колір посилань
+
+// --- Стилі Гласморфізму ---
+$glass-bg: rgba(255, 255, 255, 0.1);
+$glass-border: 1px solid rgba(255, 255, 255, 0.2);
+$glass-blur: blur(10px);
+$glass-radius: 16px;
+$glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+
+// --- Кольори кнопок ---
+$btn-success-bg: rgba(40, 167, 69, 0.5);
+$btn-danger-bg: rgba(220, 53, 69, 0.5);
+$btn-primary-bg: rgba(0, 123, 255, 0.5);

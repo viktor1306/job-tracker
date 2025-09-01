@@ -1,0 +1,25 @@
+<div class="import-container">
+  <div class="import-card">
+    <h2>Імпорт з Work.ua</h2>
+
+    <!-- Якщо все добре, показуємо інструкцію і кнопку -->
+    <div *ngIf="bookmarkletUrl; else errorTemplate">
+      <p>
+        Щоб імпортувати ваші відгуки, просто перетягніть цю кнопку на вашу панель закладок у браузері.
+        Після цього, зайдіть на сторінку "Мої відгуки" на Work.ua і натисніть на цю закладку.
+      </p>
+      <div class="bookmarklet-wrapper">
+        <a [href]="bookmarkletUrl" class="bookmarklet-btn">
+          Імпортувати з Work.ua
+        </a>
+      </div>
+    </div>
+    
+    <!-- Інакше, показуємо помилку -->
+    <ng-template #errorTemplate>
+      <p class="error-message">{{ errorMessage }}</p>
+    </ng-template>
+
+    <a routerLink="/" class="back-link">Повернутись на головну</a>
+  </div>
+</div>

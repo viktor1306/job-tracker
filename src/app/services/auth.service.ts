@@ -17,7 +17,7 @@ export class AuthService {
 
   // BehaviorSubject - це спеціальний тип Observable, який зберігає поточне значення.
   // Ми будемо зберігати тут стан сесії (залогінений користувач чи ні).
-  private _session = new BehaviorSubject<UserSession | null>(null);
+  _session = new BehaviorSubject<UserSession | null>(null); // Прибираємо private
   session$ = this._session.asObservable(); // Публічний Observable, на який зможуть підписатися компоненти
 
   constructor(private zone: NgZone) {
@@ -75,6 +75,10 @@ async signInWithGoogle() {
 
   getCurrentUserId(): string | undefined {
     return this._session.getValue()?.user?.id;
+  }
+
+    getCurrentSession(): UserSession | null {
+    return this._session.getValue();
   }
 
 }

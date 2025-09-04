@@ -15,6 +15,8 @@ export class AppComponent implements OnInit {
   
   constructor(private authService: AuthService, private router: Router) {}
 
+
+  
   ngOnInit() {
     // Підписуємось на зміни сесії
     this.authService.session$.subscribe(session => {

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common'; // Потрібен для *ngIf
   styleUrls: ['./statistics-dashboard.component.scss']
 })
 export class StatisticsDashboardComponent implements OnChanges {
-  
+
   // @Input() дозволяє цьому компоненту приймати дані з батьківського
   @Input() vacancies: any[] = [];
 
@@ -29,9 +29,11 @@ export class StatisticsDashboardComponent implements OnChanges {
 
   private calculateStatistics(): void {
     this.totalApplications = this.vacancies.length;
-    
+
     // Рахуємо кількість вакансій з певними статусами
-    this.inProgressCount = this.vacancies.filter(v => v.status === 'Співбесіда' || v.status === 'Тестове').length;
+    this.inProgressCount = this.vacancies.filter(
+      v => v.status === 'Переглянуто' || v.status === 'Співбесіда' || v.status === 'Тестове'
+    ).length;
     this.offersCount = this.vacancies.filter(v => v.status === 'Офер').length;
     this.rejectionsCount = this.vacancies.filter(v => v.status === 'Відмова').length;
   }

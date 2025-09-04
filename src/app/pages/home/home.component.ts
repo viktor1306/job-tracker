@@ -27,6 +27,8 @@ import { ConfirmDialogService } from '../../services/confirm-dialog.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
+  currentView: 'table' | 'cards' = 'table'; // За замовчуванням - таблиця
+
   isLoading: boolean = true;
   searchTerm: string = '';
   sortColumn: string = 'date_applied';
@@ -48,6 +50,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {
     this.broadcastChannel = new BroadcastChannel('job_tracker_channel');
     this.visibilityChangeHandler = this.handleVisibilityChange.bind(this);
+  }
+
+    setView(view: 'table' | 'cards') {
+    this.currentView = view;
   }
 
   ngOnInit() {

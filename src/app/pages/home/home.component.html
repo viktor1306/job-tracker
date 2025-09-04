@@ -1,114 +1,192 @@
 <!-- src/app/app.component.html -->
 
-  <div class="container">
+<div class="container">
 
-    <div class="header">
-      <h1>Мій трекер вакансій</h1>
-      <div class="header-actions">
-        <a routerLink="/import" class="btn-import">Імпорт з Work.ua</a>
-        <button (click)="signOut()" class="logout-btn">Вийти</button>
-      </div>
+  <div class="header">
+    <h1>Мій трекер вакансій</h1>
+    <div class="header-actions">
+      <a routerLink="/import" class="btn-import">Імпорт з Work.ua</a>
+      <button (click)="signOut()" class="logout-btn">Вийти</button>
     </div>
+  </div>
 
-    <app-statistics-dashboard [vacancies]="vacancies"></app-statistics-dashboard>
+  <app-statistics-dashboard [vacancies]="vacancies"></app-statistics-dashboard>
 
-    <form (ngSubmit)="addVacancy()" class="add-form">
-      <h2>Додати нову вакансію</h2>
-      <div class="form-grid">
-        <input type="text" [(ngModel)]="newVacancy.vacancy_title" name="vacancy_title" placeholder="Назва вакансії"
-          required>
-        <input type="url" [(ngModel)]="newVacancy.vacancy_url" name="vacancy_url" placeholder="URL вакансії" required>
-        <select [(ngModel)]="newVacancy.platform" name="platform">
-          <option value="Work.ua">Work.ua</option>
-          <option value="robota.ua">robota.ua</option>
-        </select>
-        <input type="text" [(ngModel)]="newVacancy.salary" name="salary" placeholder="Зарплата">
-        <input type="date" [(ngModel)]="newVacancy.date_applied" name="date_applied">
-        <select [(ngModel)]="newVacancy.status" name="status">
-          <option value="Подано">Подано</option>
-          <option value="Співбесіда">Співбесіда</option>
-          <option value="Тестове">Тестове</option>
-          <option value="Офер">Офер</option>
-          <option value="Відмова">Відмова</option>
-        </select>
-      </div>
-      <button type="submit">Додати вакансію</button>
-      <!-- src/app/app.component.html -->
+  <form (ngSubmit)="addVacancy()" class="add-form">
+    <h2>Додати нову вакансію</h2>
+    <div class="form-grid">
+      <input type="text" [(ngModel)]="newVacancy.vacancy_title" name="vacancy_title" placeholder="Назва вакансії"
+        required>
+      <input type="url" [(ngModel)]="newVacancy.vacancy_url" name="vacancy_url" placeholder="URL вакансії" required>
+      <select [(ngModel)]="newVacancy.platform" name="platform">
+        <option value="Work.ua">Work.ua</option>
+        <option value="robota.ua">robota.ua</option>
+      </select>
+      <input type="text" [(ngModel)]="newVacancy.salary" name="salary" placeholder="Зарплата">
+      <input type="date" [(ngModel)]="newVacancy.date_applied" name="date_applied">
+      <select [(ngModel)]="newVacancy.status" name="status">
+        <option value="Подано">Подано</option>
+        <option value="Переглянуто">Переглянуто</option>
+        <option value="Співбесіда">Співбесіда</option>
+        <option value="Тестове">Тестове</option>
+        <option value="Офер">Офер</option>
+        <option value="Відмова">Відмова</option>
+      </select>
+    </div>
+    <button type="submit">Додати вакансію</button>
+    <!-- src/app/app.component.html -->
 
-    </form>
+  </form>
 
-    <!-- Якщо НЕ йде завантаження, показуємо контент -->
-    <div *ngIf="!isLoading; else loadingSpinner">
-
+  <!-- Якщо НЕ йде завантаження, показуємо контент -->
+  <div *ngIf="!isLoading; else loadingSpinner">
+    <div class="table-wrapper">
       <div class="table-controls">
         <div class="search-container">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+          </svg>
           <input type="text" [(ngModel)]="searchTerm" (input)="applyFiltersAndSorting()"
             placeholder="Пошук за назвою вакансії...">
         </div>
+        <div class="view-switcher">
+          <button (click)="setView('table')" [class.active]="currentView === 'table'" title="Вигляд таблиці">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path
+                d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z" />
+            </svg>
+          </button>
+          <button (click)="setView('cards')" [class.active]="currentView === 'cards'" title="Вигляд карток">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M4 4h6v6H4zm9 0h6v6h-6zM4 14h6v6H4zm9 0h6v6h-6z" />
+            </svg>
+          </button>
+        </div>
+
       </div>
+      <div class="vacancies-list-wrapper">
 
-      <table>
-        <thead>
-          <tr>
-            <th (click)="onSort('vacancy_title')" class="sortable">
-              Назва вакансії
-              <span *ngIf="sortColumn === 'vacancy_title'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
-            </th>
-            <th (click)="onSort('platform')" class="sortable">
-              Платформа
-              <span *ngIf="sortColumn === 'platform'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
-            </th>
-            <th (click)="onSort('date_applied')" class="sortable">
-              Дата відгуку
-              <span *ngIf="sortColumn === 'date_applied'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
-            </th>
-            <th>ЗП</th>
-            <th (click)="onSort('status')" class="sortable">
-              Статус
-              <span *ngIf="sortColumn === 'status'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
-            </th>
-            <th>Дії</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let vacancy of filteredVacancies">
-            <td data-label="Назва вакансії"><a [href]="vacancy.vacancy_url" target="_blank">{{ vacancy.vacancy_title
-                }}</a>
-            </td>
-            <td data-label="Платформа">{{ vacancy.platform }}</td>
-            <td data-label="Дата відгуку">{{ vacancy.date_applied }}</td>
-            <td data-label="ЗП">{{ vacancy.salary }}</td>
-            <td data-label="Статус">
-              <select [ngModel]="vacancy.status" (ngModelChange)="updateStatus(vacancy.id, $event)"
-                name="status-{{vacancy.id}}">
-                <option value="Подано">Подано</option>
-                <option value="Співбесіда">Співбесіда</option>
-                <option value="Тестове">Тестове</option>
-                <option value="Офер">Офер</option>
-                <option value="Відмова">Відмова</option>
-              </select>
-            </td>
-            <td data-label="Дії">
-              <button (click)="deleteVacancy(vacancy.id)" class="delete-btn">Видалити</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <!-- ВИГЛЯД ТАБЛИЦІ -->
+        <div class="view-container" [class.visible]="currentView === 'table'">
 
-      <!-- Показуємо цей блок, тільки якщо завантаження завершено І список порожній -->
-      <div *ngIf="filteredVacancies.length === 0" class="empty-state">
-        <p>Ви ще не додали жодної вакансії. Час це виправити!</p>
+          <table>
+            <thead>
+              <tr>
+                <th (click)="onSort('vacancy_title')" class="sortable">
+                  Назва вакансії
+                  <span *ngIf="sortColumn === 'vacancy_title'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                </th>
+                <th (click)="onSort('platform')" class="sortable">
+                  Платформа
+                  <span *ngIf="sortColumn === 'platform'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                </th>
+                <th (click)="onSort('date_applied')" class="sortable">
+                  Дата відгуку
+                  <span *ngIf="sortColumn === 'date_applied'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                </th>
+                <th>ЗП</th>
+                <th (click)="onSort('status')" class="sortable">
+                  Статус
+                  <span *ngIf="sortColumn === 'status'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                </th>
+                <th>Дії</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vacancy of filteredVacancies">
+                <td data-label="Назва вакансії"><a [href]="vacancy.vacancy_url" target="_blank">{{ vacancy.vacancy_title
+                    }}</a>
+                </td>
+                <td data-label="Платформа">{{ vacancy.platform }}</td>
+                <td data-label="Дата відгуку">{{ vacancy.date_applied }}</td>
+                <td data-label="ЗП">{{ vacancy.salary }}</td>
+                <td data-label="Статус">
+                  <select [ngModel]="vacancy.status" (ngModelChange)="updateStatus(vacancy.id, $event)"
+                    name="status-{{vacancy.id}}">
+                    <option value="Подано">Подано</option>
+                    <option value="Переглянуто">Переглянуто</option>
+                    <option value="Співбесіда">Співбесіда</option>
+                    <option value="Тестове">Тестове</option>
+                    <option value="Офер">Офер</option>
+                    <option value="Відмова">Відмова</option>
+                  </select>
+                </td>
+                <td data-label="Дії">
+                  <button (click)="deleteVacancy(vacancy.id)" class="delete-btn">Видалити</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="vacancies-list" [style.grid-template-rows]="currentView === 'cards' ? '1fr' : '0fr'">
+          <div class="cards-view-wrapper">
+
+            <!-- ВИГЛЯД КАРТОК (показуємо, якщо currentView === 'cards') -->
+            <div class="view-container" [class.visible]="currentView === 'cards'">
+              <div class="cards-grid-container">
+                <div *ngFor="let vacancy of filteredVacancies" class="vacancy-card">
+
+                  <!-- 1. ЗАГОЛОВОК (ГОЛОВНИЙ АКЦЕНТ) -->
+                  <div class="card-header">
+                    <a [href]="vacancy.vacancy_url" target="_blank">{{ vacancy.vacancy_title }}</a>
+                  </div>
+
+                  <!-- 2. СІТКА З ДЕТАЛЯМИ -->
+                  <div class="card-details-grid">
+                    <div class="card-field">
+                      <span class="field-label">ПЛАТФОРМА</span>
+                      {{ vacancy.platform }}
+                    </div>
+                    <div class="card-field">
+                      <span class="field-label">ДАТА ВІДГУКУ</span>
+                      {{ vacancy.date_applied }}
+                    </div>
+                    <div class="card-field">
+                      <span class="field-label">ЗАРПЛАТА</span>
+                      {{ vacancy.salary || 'Не вказано' }}
+                    </div>
+                  </div>
+
+                  <!-- 3. ПІДВАЛ З ДІЯМИ -->
+                  <div class="card-actions">
+                    <select [ngModel]="vacancy.status" (ngModelChange)="updateStatus(vacancy.id, $event)"
+                      name="status-card-{{vacancy.id}}">
+                      <option value="Подано">Подано</option>
+                      <option value="Переглянуто">Переглянуто</option>
+                      <option value="Співбесіда">Співбесіда</option>
+                      <option value="Тестове">Тестове</option>
+                      <option value="Офер">Офер</option>
+                      <option value="Відмова">Відмова</option>
+                    </select>
+                    <button (click)="deleteVacancy(vacancy.id)" class="delete-btn">Видалити</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div *ngIf="filteredVacancies.length === 0" class="empty-state">
+          <p>Ви ще не додали жодної вакансії. Час це виправити!</p>
+
+        </div>
+
       </div>
-
     </div>
-
-    <!-- Інакше, показуємо шаблон зі спіннером -->
-    <ng-template #loadingSpinner>
-      <div class="spinner-container">
-        <div class="spinner"></div>
-      </div>
-    </ng-template>
-
   </div>
+
+  <!-- Інакше, показуємо шаблон зі спіннером -->
+  <ng-template #loadingSpinner>
+    <div class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+  </ng-template>
+
+</div>
 
 <app-confirm-dialog></app-confirm-dialog>
